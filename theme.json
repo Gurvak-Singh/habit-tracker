@@ -1,0 +1,313 @@
+{
+  "name": "Modern Blue Theme",
+  "description": "A sophisticated theme with smooth transitions and a blue-based color palette",
+  "modes": {
+    "light": {
+      "colors": {
+        "background": {
+          "hsl": "0 0% 100%",
+          "hex": "#ffffff",
+          "description": "Main background color"
+        },
+        "foreground": {
+          "hsl": "222.2 84% 4.9%",
+          "hex": "#020817",
+          "description": "Main text color"
+        },
+        "card": {
+          "hsl": "0 0% 100%",
+          "hex": "#ffffff",
+          "description": "Card background color"
+        },
+        "cardForeground": {
+          "hsl": "222.2 84% 4.9%",
+          "hex": "#020817",
+          "description": "Card text color"
+        },
+        "popover": {
+          "hsl": "0 0% 100%",
+          "hex": "#ffffff",
+          "description": "Popover background color"
+        },
+        "popoverForeground": {
+          "hsl": "222.2 84% 4.9%",
+          "hex": "#020817",
+          "description": "Popover text color"
+        },
+        "primary": {
+          "hsl": "222.2 47.4% 11.2%",
+          "hex": "#0f172a",
+          "description": "Primary brand color"
+        },
+        "primaryForeground": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Text on primary color"
+        },
+        "secondary": {
+          "hsl": "210 40% 96.1%",
+          "hex": "#f1f5f9",
+          "description": "Secondary brand color"
+        },
+        "secondaryForeground": {
+          "hsl": "222.2 47.4% 11.2%",
+          "hex": "#0f172a",
+          "description": "Text on secondary color"
+        },
+        "muted": {
+          "hsl": "210 40% 96.1%",
+          "hex": "#f1f5f9",
+          "description": "Muted background color"
+        },
+        "mutedForeground": {
+          "hsl": "215.4 16.3% 46.9%",
+          "hex": "#64748b",
+          "description": "Muted text color"
+        },
+        "accent": {
+          "hsl": "210 40% 96.1%",
+          "hex": "#f1f5f9",
+          "description": "Accent color"
+        },
+        "accentForeground": {
+          "hsl": "222.2 47.4% 11.2%",
+          "hex": "#0f172a",
+          "description": "Text on accent color"
+        },
+        "destructive": {
+          "hsl": "0 84.2% 60.2%",
+          "hex": "#ef4444",
+          "description": "Destructive/error color"
+        },
+        "destructiveForeground": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Text on destructive color"
+        },
+        "border": {
+          "hsl": "214.3 31.8% 91.4%",
+          "hex": "#e2e8f0",
+          "description": "Border color"
+        },
+        "input": {
+          "hsl": "214.3 31.8% 91.4%",
+          "hex": "#e2e8f0",
+          "description": "Input border color"
+        },
+        "ring": {
+          "hsl": "222.2 84% 4.9%",
+          "hex": "#020817",
+          "description": "Focus ring color"
+        }
+      }
+    },
+    "dark": {
+      "colors": {
+        "background": {
+          "hsl": "222.2 84% 4.9%",
+          "hex": "#020817",
+          "description": "Main background color"
+        },
+        "foreground": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Main text color"
+        },
+        "card": {
+          "hsl": "222.2 84% 4.9%",
+          "hex": "#020817",
+          "description": "Card background color"
+        },
+        "cardForeground": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Card text color"
+        },
+        "popover": {
+          "hsl": "222.2 84% 4.9%",
+          "hex": "#020817",
+          "description": "Popover background color"
+        },
+        "popoverForeground": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Popover text color"
+        },
+        "primary": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Primary brand color"
+        },
+        "primaryForeground": {
+          "hsl": "222.2 47.4% 11.2%",
+          "hex": "#0f172a",
+          "description": "Text on primary color"
+        },
+        "secondary": {
+          "hsl": "217.2 32.6% 17.5%",
+          "hex": "#1e293b",
+          "description": "Secondary brand color"
+        },
+        "secondaryForeground": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Text on secondary color"
+        },
+        "muted": {
+          "hsl": "217.2 32.6% 17.5%",
+          "hex": "#1e293b",
+          "description": "Muted background color"
+        },
+        "mutedForeground": {
+          "hsl": "215 20.2% 65.1%",
+          "hex": "#94a3b8",
+          "description": "Muted text color"
+        },
+        "accent": {
+          "hsl": "217.2 32.6% 17.5%",
+          "hex": "#1e293b",
+          "description": "Accent color"
+        },
+        "accentForeground": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Text on accent color"
+        },
+        "destructive": {
+          "hsl": "0 62.8% 30.6%",
+          "hex": "#7f1d1d",
+          "description": "Destructive/error color"
+        },
+        "destructiveForeground": {
+          "hsl": "210 40% 98%",
+          "hex": "#f8fafc",
+          "description": "Text on destructive color"
+        },
+        "border": {
+          "hsl": "217.2 32.6% 17.5%",
+          "hex": "#1e293b",
+          "description": "Border color"
+        },
+        "input": {
+          "hsl": "217.2 32.6% 17.5%",
+          "hex": "#1e293b",
+          "description": "Input border color"
+        },
+        "ring": {
+          "hsl": "212.7 26.8% 83.9%",
+          "hex": "#cbd5e1",
+          "description": "Focus ring color"
+        }
+      }
+    }
+  },
+  "typography": {
+    "fontFamily": {
+      "sans": "Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+      "mono": "'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace"
+    },
+    "fontSize": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem"
+    },
+    "fontWeight": {
+      "normal": "400",
+      "medium": "500",
+      "semibold": "600",
+      "bold": "700"
+    },
+    "lineHeight": {
+      "tight": "1.25",
+      "normal": "1.5",
+      "relaxed": "1.75"
+    }
+  },
+  "spacing": {
+    "0": "0",
+    "1": "0.25rem",
+    "2": "0.5rem",
+    "3": "0.75rem",
+    "4": "1rem",
+    "5": "1.25rem",
+    "6": "1.5rem",
+    "8": "2rem",
+    "10": "2.5rem",
+    "12": "3rem",
+    "16": "4rem",
+    "20": "5rem",
+    "24": "6rem",
+    "32": "8rem"
+  },
+  "borderRadius": {
+    "none": "0",
+    "sm": "0.125rem",
+    "base": "0.25rem",
+    "md": "0.375rem",
+    "lg": "0.5rem",
+    "xl": "0.75rem",
+    "2xl": "1rem",
+    "full": "9999px"
+  },
+  "animation": {
+    "duration": {
+      "fast": "150ms",
+      "base": "300ms",
+      "slow": "500ms",
+      "theme": "700ms"
+    },
+    "easing": {
+      "default": "cubic-bezier(0.4, 0, 0.2, 1)",
+      "bounce": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      "smooth": "cubic-bezier(0.4, 0, 0.2, 1)"
+    }
+  },
+  "components": {
+    "button": {
+      "sizes": {
+        "sm": {
+          "height": "2rem",
+          "paddingX": "0.75rem",
+          "fontSize": "0.875rem"
+        },
+        "md": {
+          "height": "2.5rem",
+          "paddingX": "1rem",
+          "fontSize": "0.875rem"
+        },
+        "lg": {
+          "height": "3rem",
+          "paddingX": "1.5rem",
+          "fontSize": "1rem"
+        }
+      }
+    },
+    "switch": {
+      "width": "2.75rem",
+      "height": "1.5rem",
+      "thumbSize": "1.25rem"
+    },
+    "card": {
+      "padding": "1.5rem",
+      "borderRadius": "0.5rem"
+    },
+    "input": {
+      "height": "2.5rem",
+      "paddingX": "0.75rem",
+      "borderRadius": "0.375rem"
+    }
+  },
+  "shadows": {
+    "sm": "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+    "base": "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
+    "md": "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+    "lg": "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+    "xl": "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+  }
+}
