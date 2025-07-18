@@ -1,5 +1,5 @@
 Page Structure for Habit Tracker
-1. Landing Page (/)
+## 1. Landing Page (/)
 Purpose: Marketing page to showcase the app
 
 Hero section with app name and tagline
@@ -16,7 +16,7 @@ Animated feature cards
 Smooth scroll interactions
 Responsive grid layouts
 
-2. Dashboard (/dashboard)
+## 2. Dashboard (/dashboard)
 Purpose: Main habit tracking interface
 
 Today's date and motivational quote
@@ -40,7 +40,7 @@ Toggle/checkbox animations
 Progress rings/bars
 Grid and list view toggle
 
-3. Analytics (/analytics)
+## 3. Analytics (/analytics)
 Purpose: Detailed progress visualization
 
 Overall statistics cards (best streak, total days, etc.)
@@ -63,7 +63,7 @@ Filter/sort controls
 Tab navigation
 Card-based layouts
 
-4. Habit Details (/habit/[id]) (Optional 4th page)
+## 4. Habit Details (/habit/[id]) (Optional 4th page)
 Purpose: Deep dive into individual habit
 
 Habit name and description edit

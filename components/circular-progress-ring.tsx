@@ -14,7 +14,10 @@ export function CircularProgressRing({
   const radius = (size - strokeWidth) / 2
   const circumference = radius * 2 * Math.PI
   const strokeDasharray = `${circumference} ${circumference}`
-  const strokeDashoffset = circumference - (percentage / 100) * circumference
+  
+  // Ensure percentage is a valid number between 0 and 100
+  const validPercentage = Number.isFinite(percentage) ? Math.max(0, Math.min(100, percentage)) : 0
+  const strokeDashoffset = circumference - (validPercentage / 100) * circumference
 
   return (
     <div className={`relative ${className}`}>
@@ -44,7 +47,7 @@ export function CircularProgressRing({
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{Math.round(percentage)}%</span>
+        <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">{Math.round(validPercentage)}%</span>
       </div>
     </div>
   )
