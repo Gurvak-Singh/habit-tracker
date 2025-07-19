@@ -29,12 +29,6 @@ export default function LandingPage() {
             >
               How it Works
             </Link>
-            <Link
-              href="/test-sentry"
-              className="text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
-              Test Sentry
-            </Link>
             <ThemeToggle />
             <Link href="/dashboard">
               <Button
