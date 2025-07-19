@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle, TrendingUp, Target, Plus, BarChart, Calendar, Play, BarChart3, CreditCard } from "lucide-react"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function LandingPage() {
   return (
@@ -28,6 +29,7 @@ export default function LandingPage() {
             >
               How it Works
             </Link>
+            <ThemeToggle />
             <Link href="/dashboard">
               <Button
                 variant="outline"

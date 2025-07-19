@@ -5,6 +5,7 @@ import { HabitCard } from "@/components/habit-card"
 import { BookOpen, Dumbbell, Droplets, Moon, Apple, Coffee, Calendar, ArrowLeft, BarChart3, Home } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 // Sample habit data
 const initialHabits = [
@@ -127,6 +128,7 @@ export default function HabitCardsPage() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              <ThemeToggle />
               <Link href="/analytics">
                 <Button variant="outline" size="sm">
                   <BarChart3 className="w-4 h-4 mr-2" />

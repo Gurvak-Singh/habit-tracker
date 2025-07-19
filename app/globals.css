@@ -128,7 +128,7 @@
   }
 
   .floating-animation {
-    animation: floating 6s ease-in-out infinite;
+    animation: none;
   }
 
   .pulse-glow {
@@ -188,7 +188,7 @@
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(0px);
   }
 }
 
@@ -267,22 +267,51 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Completely hidden */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 0px;
+  display: none;
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
+  display: none;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-radius: 4px;
+  background: transparent;
+  display: none;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #764ba2, #f093fb);
+  background: transparent;
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+* {
+  scrollbar-width: none;
+}
+
+/* Hide scrollbar for IE and Edge */
+* {
+  -ms-overflow-style: none;
+}
+
+/* Remove floating animation completely */
+.floating-animation {
+  animation: none !important;
+}
+
+/* Update the floating keyframes to do nothing */
+@keyframes floating {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(0px);
+  }
 }
 
 /* Selection styling */

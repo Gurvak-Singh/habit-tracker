@@ -22,6 +22,7 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 // Sample data for analytics
 const statsData = [
@@ -156,6 +157,7 @@ export default function AnalyticsPage() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              <ThemeToggle />
               <Link href="/habit-cards">
                 <Button variant="outline" size="sm">
                   <CreditCard className="w-4 h-4 mr-2" />
