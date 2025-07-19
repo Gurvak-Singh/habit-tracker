@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { HabitCard } from "@/components/habit-card"
 import { AddHabitButton } from "@/components/add-habit-button"
@@ -18,6 +18,10 @@ const initialHabits = [
     progress: 85,
     completedToday: true,
     weekData: [true, true, false, true, true, true, true],
+    completedDays: 25,
+    totalDays: 30,
+    bestStreak: 18,
+    weeklyGoal: 7,
   },
   {
     id: "2",
@@ -27,6 +31,10 @@ const initialHabits = [
     progress: 60,
     completedToday: false,
     weekData: [true, false, true, true, false, true, true],
+    completedDays: 18,
+    totalDays: 30,
+    bestStreak: 14,
+    weeklyGoal: 5,
   },
   {
     id: "3",
@@ -36,6 +44,10 @@ const initialHabits = [
     progress: 75,
     completedToday: true,
     weekData: [true, true, true, false, true, true, false],
+    completedDays: 22,
+    totalDays: 30,
+    bestStreak: 12,
+    weeklyGoal: 7,
   },
   {
     id: "4",
@@ -45,6 +57,10 @@ const initialHabits = [
     progress: 40,
     completedToday: false,
     weekData: [false, true, false, true, false, true, false],
+    completedDays: 12,
+    totalDays: 30,
+    bestStreak: 8,
+    weeklyGoal: 7,
   },
   {
     id: "5",
@@ -54,6 +70,10 @@ const initialHabits = [
     progress: 90,
     completedToday: true,
     weekData: [true, true, true, true, true, false, true],
+    completedDays: 27,
+    totalDays: 30,
+    bestStreak: 20,
+    weeklyGoal: 6,
   },
   {
     id: "6",
@@ -63,6 +83,10 @@ const initialHabits = [
     progress: 95,
     completedToday: true,
     weekData: [true, true, true, true, true, true, true],
+    completedDays: 29,
+    totalDays: 30,
+    bestStreak: 25,
+    weeklyGoal: 7,
   },
 ]
 
@@ -77,7 +101,13 @@ const motivationalQuotes = [
 
 export default function Dashboard() {
   const [habits, setHabits] = useState(initialHabits)
-  const [currentQuote] = useState(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)])
+  const [currentQuote, setCurrentQuote] = useState("")
+  const [expandedCardIds, setExpandedCardIds] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    // Set quote on client side to avoid hydration mismatch
+    setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)])
+  }, [])
 
   const handleToggleToday = (habitId: string) => {
     setHabits(
@@ -86,6 +116,11 @@ export default function Dashboard() {
           const newCompletedToday = !habit.completedToday
           const newWeekData = [...habit.weekData]
           newWeekData[6] = newCompletedToday // Update today (last day in week view)
+          
+          // Update completedDays based on the toggle
+          const newCompletedDays = newCompletedToday 
+            ? Math.min(habit.completedDays + 1, habit.totalDays)
+            : Math.max(habit.completedDays - 1, 0)
 
           return {
             ...habit,
@@ -93,11 +128,25 @@ export default function Dashboard() {
             weekData: newWeekData,
             streak: newCompletedToday ? habit.streak + 1 : Math.max(0, habit.streak - 1),
             progress: Math.min(100, newCompletedToday ? habit.progress + 10 : habit.progress),
+            completedDays: newCompletedDays,
+            bestStreak: Math.max(habit.bestStreak, newCompletedToday ? habit.streak + 1 : habit.streak),
           }
         }
         return habit
       }),
     )
+  }
+
+  const handleToggleExpand = (habitId: string) => {
+    setExpandedCardIds(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(habitId)) {
+        newSet.delete(habitId)
+      } else {
+        newSet.add(habitId)
+      }
+      return newSet
+    })
   }
 
   const handleAddHabit = () => {
@@ -177,7 +226,7 @@ export default function Dashboard() {
                 <span className="text-2xl">💡</span>
               </div>
               <div>
-                <p className="text-lg font-medium italic">"{currentQuote}"</p>
+                <p className="text-lg font-medium italic">"{currentQuote || "Building better habits, one day at a time."}"</p>
               </div>
             </div>
           </div>
@@ -194,7 +243,13 @@ export default function Dashboard() {
               streak={habit.streak}
               completionPercentage={habit.progress}
               isCompleted={habit.completedToday}
+              completedDays={habit.completedDays}
+              totalDays={habit.totalDays}
+              bestStreak={habit.bestStreak}
+              weeklyGoal={habit.weeklyGoal}
+              isExpanded={expandedCardIds.has(habit.id)}
               onToggleComplete={handleToggleToday}
+              onToggleExpand={handleToggleExpand}
             />
           ))}
           <AddHabitButton onClick={handleAddHabit} />

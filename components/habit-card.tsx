@@ -2,7 +2,6 @@
 
 import type React from "react"
 
-import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
@@ -21,6 +20,8 @@ interface HabitCardProps {
   bestStreak?: number
   weeklyGoal?: number
   onToggleComplete: (id: string) => void
+  isExpanded: boolean
+  onToggleExpand: (id: string) => void
   className?: string
 }
 
@@ -36,20 +37,38 @@ export function HabitCard({
   bestStreak = 0,
   weeklyGoal = 7,
   onToggleComplete,
+  isExpanded,
+  onToggleExpand,
   className = "",
 }: HabitCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false)
-
   const handleCardClick = (e: React.MouseEvent) => {
-    // Don't expand if clicking on checkbox
-    if ((e.target as HTMLElement).closest('[role="checkbox"]')) {
+    // Prevent expansion if clicking on interactive elements
+    const target = e.target as HTMLElement
+    if (
+      target.closest('[role="checkbox"]') ||
+      target.closest('button') ||
+      target.closest('input') ||
+      target.hasAttribute('data-prevent-expand')
+    ) {
       return
     }
-    setIsExpanded(!isExpanded)
+    
+    // Toggle expansion state
+    onToggleExpand(id)
   }
 
-  const handleCheckboxChange = () => {
+  const handleCheckboxChange = (checked: boolean) => {
     onToggleComplete(id)
+  }
+
+  const handleCheckboxClick = (e: React.MouseEvent) => {
+    e.stopPropagation()
+  }
+
+  const handleExpandButtonClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation() // Prevent double-triggering
+    onToggleExpand(id)
   }
 
   return (
@@ -82,12 +101,12 @@ export function HabitCard({
           </div>
 
           {/* Progress Ring */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0" data-prevent-expand>
             <CircularProgressRing percentage={completionPercentage} size={48} strokeWidth={4} />
           </div>
 
           {/* Checkbox */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0" data-prevent-expand onClick={handleCheckboxClick}>
             <Checkbox
               checked={isCompleted}
               onCheckedChange={handleCheckboxChange}
@@ -96,8 +115,13 @@ export function HabitCard({
           </div>
 
           {/* Expand Icon */}
-          <div className="flex-shrink-0">
-            <Button variant="ghost" size="sm" className="w-8 h-8 p-0">
+          <div className="flex-shrink-0" data-prevent-expand>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="w-8 h-8 p-0"
+              onClick={handleExpandButtonClick}
+            >
               {isExpanded ? (
                 <ChevronUp className="w-4 h-4 text-slate-400" />
               ) : (
@@ -173,7 +197,7 @@ export function HabitCard({
             </div>
 
             {/* Action Buttons */}
-            <div className="flex space-x-2 mt-4">
+            <div className="flex space-x-2 mt-4" data-prevent-expand>
               <Button variant="outline" size="sm" className="flex-1 bg-transparent">
                 View History
               </Button>

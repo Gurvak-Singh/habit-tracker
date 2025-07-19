@@ -85,6 +85,7 @@ const initialHabits = [
 
 export default function HabitCardsPage() {
   const [habits, setHabits] = useState(initialHabits)
+  const [expandedCardIds, setExpandedCardIds] = useState<Set<string>>(new Set())
 
   const handleToggleComplete = (habitId: string) => {
     setHabits((prevHabits) =>
@@ -107,6 +108,18 @@ export default function HabitCardsPage() {
         return habit
       }),
     )
+  }
+
+  const handleToggleExpand = (habitId: string) => {
+    setExpandedCardIds(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(habitId)) {
+        newSet.delete(habitId)
+      } else {
+        newSet.add(habitId)
+      }
+      return newSet
+    })
   }
 
   return (
@@ -158,7 +171,22 @@ export default function HabitCardsPage() {
         {/* Habit Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {habits.map((habit) => (
-            <HabitCard key={habit.id} {...habit} onToggleComplete={handleToggleComplete} />
+            <HabitCard 
+              key={habit.id} 
+              id={habit.id}
+              name={habit.name}
+              icon={habit.icon}
+              streak={habit.streak}
+              completionPercentage={habit.completionPercentage}
+              isCompleted={habit.isCompleted}
+              completedDays={habit.completedDays}
+              totalDays={habit.totalDays}
+              bestStreak={habit.bestStreak}
+              weeklyGoal={habit.weeklyGoal}
+              isExpanded={expandedCardIds.has(habit.id)}
+              onToggleComplete={handleToggleComplete}
+              onToggleExpand={handleToggleExpand}
+            />
           ))}
         </div>
 
