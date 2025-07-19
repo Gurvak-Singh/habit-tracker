@@ -17,6 +17,8 @@ import {
   Coffee,
   Calendar,
   ArrowLeft,
+  CreditCard,
+  Home,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -152,6 +154,20 @@ export default function AnalyticsPage() {
                 <Calendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 <span className="text-xl font-bold text-slate-900 dark:text-white">Analytics</span>
               </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Link href="/habit-cards">
+                <Button variant="outline" size="sm">
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Habit Cards
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="outline" size="sm">
+                  <Home className="w-4 h-4 mr-2" />
+                  Home
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

@@ -4,7 +4,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { HabitCard } from "@/components/habit-card"
 import { AddHabitButton } from "@/components/add-habit-button"
-import { BookOpen, Dumbbell, Droplets, Moon, Apple, Coffee, Calendar, Settings } from "lucide-react"
+import { BookOpen, Dumbbell, Droplets, Moon, Apple, Coffee, Calendar, Settings, BarChart3, CreditCard } from "lucide-react"
+import Link from "next/link"
 
 // Sample habit data
 const initialHabits = [
@@ -125,10 +126,26 @@ export default function Dashboard() {
                 <span className="text-xl font-bold text-slate-900 dark:text-white">TrackMyHabits</span>
               </div>
             </div>
-            <Button variant="outline" size="sm">
-              <Settings className="w-4 h-4 mr-2" />
-              Settings
-            </Button>
+            <div className="flex items-center space-x-2">
+              <Link href="/analytics">
+                <Button variant="outline" size="sm">
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Analytics
+                </Button>
+              </Link>
+              <Link href="/habit-cards">
+                <Button variant="outline" size="sm">
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Habit Cards
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="outline" size="sm">
+                  <Settings className="w-4 h-4 mr-2" />
+                  Home
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -167,7 +184,16 @@ export default function Dashboard() {
         {/* Habits Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {habits.map((habit) => (
-            <HabitCard key={habit.id} {...habit} onToggleToday={handleToggleToday} />
+            <HabitCard 
+              key={habit.id} 
+              id={habit.id}
+              name={habit.name}
+              icon={habit.icon}
+              streak={habit.streak}
+              completionPercentage={habit.progress}
+              isCompleted={habit.completedToday}
+              onToggleComplete={handleToggleToday}
+            />
           ))}
           <AddHabitButton onClick={handleAddHabit} />
         </div>

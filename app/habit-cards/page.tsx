@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { HabitCard } from "@/components/habit-card"
-import { BookOpen, Dumbbell, Droplets, Moon, Apple, Coffee, Calendar, ArrowLeft } from "lucide-react"
+import { BookOpen, Dumbbell, Droplets, Moon, Apple, Coffee, Calendar, ArrowLeft, BarChart3, Home } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 
@@ -125,6 +125,20 @@ export default function HabitCardsPage() {
                 <Calendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 <span className="text-xl font-bold text-slate-900 dark:text-white">Habit Cards</span>
               </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Link href="/analytics">
+                <Button variant="outline" size="sm">
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  Analytics
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="outline" size="sm">
+                  <Home className="w-4 h-4 mr-2" />
+                  Home
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
