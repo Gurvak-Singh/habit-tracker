@@ -44,14 +44,20 @@ export function HabitCard({
   const handleCardClick = (e: React.MouseEvent) => {
     // Prevent expansion if clicking on interactive elements
     const target = e.target as HTMLElement
-    if (
+    const isInteractiveElement = 
       target.closest('[role="checkbox"]') ||
       target.closest('button') ||
       target.closest('input') ||
-      target.hasAttribute('data-prevent-expand')
-    ) {
+      target.hasAttribute('data-prevent-expand') ||
+      target.closest('[data-prevent-expand]')
+    
+    if (isInteractiveElement) {
       return
     }
+    
+    // Prevent event bubbling to avoid double-triggering
+    e.preventDefault()
+    e.stopPropagation()
     
     // Toggle expansion state
     onToggleExpand(id)
@@ -101,7 +107,13 @@ export function HabitCard({
           </div>
 
           {/* Progress Ring */}
-          <div className="flex-shrink-0" data-prevent-expand>
+          <div 
+            className="flex-shrink-0" 
+            data-prevent-expand 
+            onClick={(e) => {
+              e.stopPropagation()
+            }}
+          >
             <CircularProgressRing percentage={completionPercentage} size={48} strokeWidth={4} />
           </div>
 

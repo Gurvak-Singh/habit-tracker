@@ -85,7 +85,7 @@ const initialHabits = [
 
 export default function HabitCardsPage() {
   const [habits, setHabits] = useState(initialHabits)
-  const [expandedCardIds, setExpandedCardIds] = useState<Set<string>>(new Set())
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null)
 
   const handleToggleComplete = (habitId: string) => {
     setHabits((prevHabits) =>
@@ -111,15 +111,7 @@ export default function HabitCardsPage() {
   }
 
   const handleToggleExpand = (habitId: string) => {
-    setExpandedCardIds(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(habitId)) {
-        newSet.delete(habitId)
-      } else {
-        newSet.add(habitId)
-      }
-      return newSet
-    })
+    setExpandedCardId(currentId => currentId === habitId ? null : habitId)
   }
 
   return (
@@ -164,7 +156,7 @@ export default function HabitCardsPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Interactive Habit Cards</h1>
           <p className="text-slate-600 dark:text-slate-300">
-            Click on any card to expand and see detailed progress information
+            Click on any card to expand and see detailed progress information. Only one card can be expanded at a time.
           </p>
         </div>
 
@@ -183,7 +175,7 @@ export default function HabitCardsPage() {
               totalDays={habit.totalDays}
               bestStreak={habit.bestStreak}
               weeklyGoal={habit.weeklyGoal}
-              isExpanded={expandedCardIds.has(habit.id)}
+              isExpanded={expandedCardId === habit.id}
               onToggleComplete={handleToggleComplete}
               onToggleExpand={handleToggleExpand}
             />
@@ -208,7 +200,7 @@ export default function HabitCardsPage() {
             </div>
             <div>
               <h3 className="font-medium text-slate-900 dark:text-white mb-2">📈 Expand Details</h3>
-              <p>Click anywhere on the card to expand and see detailed statistics and progress bars.</p>
+              <p>Click anywhere on the card to expand and see detailed statistics and progress bars. Only one card can be expanded at a time.</p>
             </div>
           </div>
         </div>
