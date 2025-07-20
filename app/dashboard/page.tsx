@@ -159,7 +159,7 @@ export default function Dashboard() {
   };
 
   const handleCardToggle = (habitId: string) => {
-    setExpandedCardId(expandedCardId === habitId ? null : habitId);
+    setExpandedCardId((prevId) => (prevId === habitId ? null : habitId));
   };
 
   const handleAddHabit = () => {

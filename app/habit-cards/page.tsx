@@ -1,11 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { HabitCard } from "@/components/habit-card"
-import { BookOpen, Dumbbell, Droplets, Moon, Apple, Coffee, Calendar, ArrowLeft, BarChart3, Home } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Link from "next/link"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { useState } from "react";
+import { HabitCard } from "@/components/habit-card";
+import {
+  BookOpen,
+  Dumbbell,
+  Droplets,
+  Moon,
+  Apple,
+  Coffee,
+  Calendar,
+  ArrowLeft,
+  BarChart3,
+  Home,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 // Sample habit data
 const initialHabits = [
@@ -81,20 +92,24 @@ const initialHabits = [
     bestStreak: 25,
     weeklyGoal: 7,
   },
-]
+];
 
 export default function HabitCardsPage() {
-  const [habits, setHabits] = useState(initialHabits)
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null)
+  const [habits, setHabits] = useState(initialHabits);
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
   const handleToggleComplete = (habitId: string) => {
     setHabits((prevHabits) =>
       prevHabits.map((habit) => {
         if (habit.id === habitId) {
-          const newIsCompleted = !habit.isCompleted
-          const newCompletedDays = newIsCompleted ? habit.completedDays + 1 : Math.max(0, habit.completedDays - 1)
-          const newStreak = newIsCompleted ? habit.streak + 1 : 0
-          const newCompletionPercentage = Math.round((newCompletedDays / habit.totalDays) * 100)
+          const newIsCompleted = !habit.isCompleted;
+          const newCompletedDays = newIsCompleted
+            ? habit.completedDays + 1
+            : Math.max(0, habit.completedDays - 1);
+          const newStreak = newIsCompleted ? habit.streak + 1 : 0;
+          const newCompletionPercentage = Math.round(
+            (newCompletedDays / habit.totalDays) * 100
+          );
 
           return {
             ...habit,
@@ -103,16 +118,16 @@ export default function HabitCardsPage() {
             streak: newStreak,
             completionPercentage: newCompletionPercentage,
             bestStreak: Math.max(habit.bestStreak, newStreak),
-          }
+          };
         }
-        return habit
-      }),
-    )
-  }
+        return habit;
+      })
+    );
+  };
 
   const handleCardToggle = (habitId: string) => {
-    setExpandedCardId(expandedCardId === habitId ? null : habitId);
-  }
+    setExpandedCardId((prevId) => (prevId === habitId ? null : habitId));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950">
@@ -129,7 +144,9 @@ export default function HabitCardsPage() {
               </Link>
               <div className="flex items-center space-x-2">
                 <Calendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <span className="text-xl font-bold text-slate-900 dark:text-white">Habit Cards</span>
+                <span className="text-xl font-bold text-slate-900 dark:text-white">
+                  Habit Cards
+                </span>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -154,17 +171,20 @@ export default function HabitCardsPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Interactive Habit Cards</h1>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+            Interactive Habit Cards
+          </h1>
           <p className="text-slate-600 dark:text-slate-300">
-            Click on any card to expand and see detailed progress information. Only one card can be expanded at a time.
+            Click on any card to expand and see detailed progress information.
+            Only one card can be expanded at a time.
           </p>
         </div>
 
         {/* Habit Cards Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {habits.map((habit) => (
-            <HabitCard 
-              key={habit.id} 
+            <HabitCard
+              key={habit.id}
               id={habit.id}
               name={habit.name}
               icon={habit.icon}
@@ -177,34 +197,56 @@ export default function HabitCardsPage() {
               weeklyGoal={habit.weeklyGoal}
               isExpanded={expandedCardId === habit.id}
               onToggleComplete={handleToggleComplete}
-              onToggleExpand={handleCardToggle}
+              onToggle={handleCardToggle}
             />
           ))}
         </div>
 
         {/* Usage Instructions */}
         <div className="mt-12 bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">How to Use</h2>
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white mb-4">
+            How to Use
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-slate-600 dark:text-slate-300">
             <div>
-              <h3 className="font-medium text-slate-900 dark:text-white mb-2">✅ Mark Complete</h3>
-              <p>Click the checkbox to mark a habit as completed for today. This updates your streak and progress.</p>
+              <h3 className="font-medium text-slate-900 dark:text-white mb-2">
+                ✅ Mark Complete
+              </h3>
+              <p>
+                Click the checkbox to mark a habit as completed for today. This
+                updates your streak and progress.
+              </p>
             </div>
             <div>
-              <h3 className="font-medium text-slate-900 dark:text-white mb-2">📊 View Progress</h3>
-              <p>The circular progress ring shows your monthly completion percentage at a glance.</p>
+              <h3 className="font-medium text-slate-900 dark:text-white mb-2">
+                📊 View Progress
+              </h3>
+              <p>
+                The circular progress ring shows your monthly completion
+                percentage at a glance.
+              </p>
             </div>
             <div>
-              <h3 className="font-medium text-slate-900 dark:text-white mb-2">🔥 Track Streaks</h3>
-              <p>The flame icon shows your current streak. Keep it burning by completing habits daily!</p>
+              <h3 className="font-medium text-slate-900 dark:text-white mb-2">
+                🔥 Track Streaks
+              </h3>
+              <p>
+                The flame icon shows your current streak. Keep it burning by
+                completing habits daily!
+              </p>
             </div>
             <div>
-              <h3 className="font-medium text-slate-900 dark:text-white mb-2">📈 Expand Details</h3>
-              <p>Click anywhere on the card to expand and see detailed statistics and progress bars. Only one card can be expanded at a time.</p>
+              <h3 className="font-medium text-slate-900 dark:text-white mb-2">
+                📈 Expand Details
+              </h3>
+              <p>
+                Click anywhere on the card to expand and see detailed statistics
+                and progress bars. Only one card can be expanded at a time.
+              </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

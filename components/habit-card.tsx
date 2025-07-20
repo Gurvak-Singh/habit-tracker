@@ -49,6 +49,9 @@ export function HabitCard({
   onToggle,
   className = "",
 }: HabitCardProps) {
+  // Ensure onToggle has a default value
+  const safeOnToggle =
+    onToggle || (() => console.warn("onToggle not provided"));
   const handleCardClick = (e: React.MouseEvent) => {
     // Prevent expansion if clicking on interactive elements
     const target = e.target as HTMLElement;
@@ -68,7 +71,7 @@ export function HabitCard({
     e.stopPropagation();
 
     // Toggle expansion state
-    onToggle(id);
+    safeOnToggle(id);
   };
 
   const handleCheckboxChange = (checked: boolean) => {
@@ -82,7 +85,7 @@ export function HabitCard({
   const handleExpandButtonClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation(); // Prevent double-triggering
-    onToggle(id);
+    safeOnToggle(id);
   };
 
   return (
