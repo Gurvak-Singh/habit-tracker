@@ -110,8 +110,8 @@ export default function HabitCardsPage() {
     )
   }
 
-  const handleToggleExpand = (habitId: string) => {
-    setExpandedCardId(currentId => currentId === habitId ? null : habitId)
+  const handleCardToggle = (habitId: string) => {
+    setExpandedCardId(expandedCardId === habitId ? null : habitId);
   }
 
   return (
@@ -177,7 +177,7 @@ export default function HabitCardsPage() {
               weeklyGoal={habit.weeklyGoal}
               isExpanded={expandedCardId === habit.id}
               onToggleComplete={handleToggleComplete}
-              onToggleExpand={handleToggleExpand}
+              onToggleExpand={handleCardToggle}
             />
           ))}
         </div>

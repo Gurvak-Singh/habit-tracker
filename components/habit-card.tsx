@@ -1,28 +1,36 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Button } from "@/components/ui/button"
-import { CircularProgressRing } from "./circular-progress-ring"
-import { Flame, Calendar, TrendingUp, Target, ChevronDown, ChevronUp, type LucideIcon } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { CircularProgressRing } from "./circular-progress-ring";
+import {
+  Flame,
+  Calendar,
+  TrendingUp,
+  Target,
+  ChevronDown,
+  ChevronUp,
+  type LucideIcon,
+} from "lucide-react";
 
 interface HabitCardProps {
-  id: string
-  name: string
-  icon: LucideIcon
-  streak: number
-  completionPercentage: number
-  isCompleted: boolean
-  totalDays?: number
-  completedDays?: number
-  bestStreak?: number
-  weeklyGoal?: number
-  onToggleComplete: (id: string) => void
-  isExpanded: boolean
-  onToggleExpand: (id: string) => void
-  className?: string
+  id: string;
+  name: string;
+  icon: LucideIcon;
+  streak: number;
+  completionPercentage: number;
+  isCompleted: boolean;
+  totalDays?: number;
+  completedDays?: number;
+  bestStreak?: number;
+  weeklyGoal?: number;
+  onToggleComplete: (id: string) => void;
+  isExpanded: boolean;
+  onToggle: (id: string) => void;
+  className?: string;
 }
 
 export function HabitCard({
@@ -38,48 +46,50 @@ export function HabitCard({
   weeklyGoal = 7,
   onToggleComplete,
   isExpanded,
-  onToggleExpand,
+  onToggle,
   className = "",
 }: HabitCardProps) {
   const handleCardClick = (e: React.MouseEvent) => {
     // Prevent expansion if clicking on interactive elements
-    const target = e.target as HTMLElement
-    const isInteractiveElement = 
+    const target = e.target as HTMLElement;
+    const isInteractiveElement =
       target.closest('[role="checkbox"]') ||
-      target.closest('button') ||
-      target.closest('input') ||
-      target.hasAttribute('data-prevent-expand') ||
-      target.closest('[data-prevent-expand]')
-    
+      target.closest("button") ||
+      target.closest("input") ||
+      target.hasAttribute("data-prevent-expand") ||
+      target.closest("[data-prevent-expand]");
+
     if (isInteractiveElement) {
-      return
+      return;
     }
-    
+
     // Prevent event bubbling to avoid double-triggering
-    e.preventDefault()
-    e.stopPropagation()
-    
+    e.preventDefault();
+    e.stopPropagation();
+
     // Toggle expansion state
-    onToggleExpand(id)
-  }
+    onToggle(id);
+  };
 
   const handleCheckboxChange = (checked: boolean) => {
-    onToggleComplete(id)
-  }
+    onToggleComplete(id);
+  };
 
   const handleCheckboxClick = (e: React.MouseEvent) => {
-    e.stopPropagation()
-  }
+    e.stopPropagation();
+  };
 
   const handleExpandButtonClick = (e: React.MouseEvent) => {
-    e.preventDefault()
-    e.stopPropagation() // Prevent double-triggering
-    onToggleExpand(id)
-  }
+    e.preventDefault();
+    e.stopPropagation(); // Prevent double-triggering
+    onToggle(id);
+  };
 
   return (
     <Card
-      className={`group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 ${className}`}
+      className={`habit-card group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 ${
+        isExpanded ? "expanded" : "collapsed"
+      } ${className}`}
       onClick={handleCardClick}
     >
       <CardContent className="p-4">
@@ -94,11 +104,19 @@ export function HabitCard({
 
           {/* Habit Info */}
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-slate-900 dark:text-white truncate">{name}</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-white truncate">
+              {name}
+            </h3>
             <div className="flex items-center space-x-3 mt-1">
               {/* Streak Counter */}
               <div className="flex items-center space-x-1">
-                <Flame className={`w-4 h-4 ${streak > 0 ? "text-orange-500" : "text-slate-400 dark:text-slate-500"}`} />
+                <Flame
+                  className={`w-4 h-4 ${
+                    streak > 0
+                      ? "text-orange-500"
+                      : "text-slate-400 dark:text-slate-500"
+                  }`}
+                />
                 <span className="text-sm font-medium text-slate-600 dark:text-slate-300">
                   {streak} day{streak !== 1 ? "s" : ""}
                 </span>
@@ -107,18 +125,26 @@ export function HabitCard({
           </div>
 
           {/* Progress Ring */}
-          <div 
-            className="flex-shrink-0" 
-            data-prevent-expand 
+          <div
+            className="flex-shrink-0"
+            data-prevent-expand
             onClick={(e) => {
-              e.stopPropagation()
+              e.stopPropagation();
             }}
           >
-            <CircularProgressRing percentage={completionPercentage} size={48} strokeWidth={4} />
+            <CircularProgressRing
+              percentage={completionPercentage}
+              size={48}
+              strokeWidth={4}
+            />
           </div>
 
           {/* Checkbox */}
-          <div className="flex-shrink-0" data-prevent-expand onClick={handleCheckboxClick}>
+          <div
+            className="flex-shrink-0"
+            data-prevent-expand
+            onClick={handleCheckboxClick}
+          >
             <Checkbox
               checked={isCompleted}
               onCheckedChange={handleCheckboxChange}
@@ -128,9 +154,9 @@ export function HabitCard({
 
           {/* Expand Icon */}
           <div className="flex-shrink-0" data-prevent-expand>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="w-8 h-8 p-0"
               onClick={handleExpandButtonClick}
             >
@@ -145,14 +171,16 @@ export function HabitCard({
 
         {/* Expanded Details */}
         {isExpanded && (
-          <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 animate-in slide-in-from-top-2 duration-200">
+          <div className="expanded-content mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
             <div className="grid grid-cols-2 gap-4">
               {/* Stats */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Calendar className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-300">This Month</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-300">
+                      This Month
+                    </span>
                   </div>
                   <span className="text-sm font-medium text-slate-900 dark:text-white">
                     {completedDays}/{totalDays}
@@ -162,15 +190,21 @@ export function HabitCard({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <TrendingUp className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-300">Best Streak</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-300">
+                      Best Streak
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">{bestStreak} days</span>
+                  <span className="text-sm font-medium text-slate-900 dark:text-white">
+                    {bestStreak} days
+                  </span>
                 </div>
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <Target className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-300">Weekly Goal</span>
+                    <span className="text-sm text-slate-600 dark:text-slate-300">
+                      Weekly Goal
+                    </span>
                   </div>
                   <span className="text-sm font-medium text-slate-900 dark:text-white">
                     {Math.min(completedDays, weeklyGoal)}/{weeklyGoal}
@@ -183,7 +217,9 @@ export function HabitCard({
                 <div>
                   <div className="flex justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
                     <span>Monthly Progress</span>
-                    <span>{Math.round((completedDays / totalDays) * 100)}%</span>
+                    <span>
+                      {Math.round((completedDays / totalDays) * 100)}%
+                    </span>
                   </div>
                   <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                     <div
@@ -196,12 +232,22 @@ export function HabitCard({
                 <div>
                   <div className="flex justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
                     <span>Weekly Goal</span>
-                    <span>{Math.round((Math.min(completedDays, weeklyGoal) / weeklyGoal) * 100)}%</span>
+                    <span>
+                      {Math.round(
+                        (Math.min(completedDays, weeklyGoal) / weeklyGoal) * 100
+                      )}
+                      %
+                    </span>
                   </div>
                   <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                     <div
                       className="bg-green-600 dark:bg-green-400 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(Math.min(completedDays, weeklyGoal) / weeklyGoal) * 100}%` }}
+                      style={{
+                        width: `${
+                          (Math.min(completedDays, weeklyGoal) / weeklyGoal) *
+                          100
+                        }%`,
+                      }}
                     />
                   </div>
                 </div>
@@ -210,10 +256,26 @@ export function HabitCard({
 
             {/* Action Buttons */}
             <div className="flex space-x-2 mt-4" data-prevent-expand>
-              <Button variant="outline" size="sm" className="flex-1 bg-transparent">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 bg-transparent"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // TODO: Add View History functionality
+                }}
+              >
                 View History
               </Button>
-              <Button variant="outline" size="sm" className="flex-1 bg-transparent">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 bg-transparent"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // TODO: Add Edit Habit functionality
+                }}
+              >
                 Edit Habit
               </Button>
             </div>
@@ -221,5 +283,5 @@ export function HabitCard({
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

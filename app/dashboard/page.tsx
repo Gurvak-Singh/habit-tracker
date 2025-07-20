@@ -1,12 +1,23 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { HabitCard } from "@/components/habit-card"
-import { AddHabitButton } from "@/components/add-habit-button"
-import { BookOpen, Dumbbell, Droplets, Moon, Apple, Coffee, Calendar, Settings, BarChart3, CreditCard } from "lucide-react"
-import Link from "next/link"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { HabitCard } from "@/components/habit-card";
+import { AddHabitButton } from "@/components/add-habit-button";
+import {
+  BookOpen,
+  Dumbbell,
+  Droplets,
+  Moon,
+  Apple,
+  Coffee,
+  Calendar,
+  Settings,
+  BarChart3,
+  CreditCard,
+} from "lucide-react";
+import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 // Sample habit data
 const initialHabits = [
@@ -88,7 +99,7 @@ const initialHabits = [
     bestStreak: 25,
     weeklyGoal: 7,
   },
-]
+];
 
 const motivationalQuotes = [
   "Success is the sum of small efforts repeated day in and day out.",
@@ -97,64 +108,74 @@ const motivationalQuotes = [
   "Small daily improvements over time lead to stunning results.",
   "Excellence is not an act, but a habit.",
   "The best time to plant a tree was 20 years ago. The second best time is now.",
-]
+];
 
 export default function Dashboard() {
-  const [habits, setHabits] = useState(initialHabits)
-  const [currentQuote, setCurrentQuote] = useState("")
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null)
+  const [habits, setHabits] = useState(initialHabits);
+  const [currentQuote, setCurrentQuote] = useState("");
+  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
   useEffect(() => {
     // Set quote on client side to avoid hydration mismatch
-    setCurrentQuote(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)])
-  }, [])
+    setCurrentQuote(
+      motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]
+    );
+  }, []);
 
   const handleToggleToday = (habitId: string) => {
     setHabits(
       habits.map((habit) => {
         if (habit.id === habitId) {
-          const newCompletedToday = !habit.completedToday
-          const newWeekData = [...habit.weekData]
-          newWeekData[6] = newCompletedToday // Update today (last day in week view)
-          
+          const newCompletedToday = !habit.completedToday;
+          const newWeekData = [...habit.weekData];
+          newWeekData[6] = newCompletedToday; // Update today (last day in week view)
+
           // Update completedDays based on the toggle
-          const newCompletedDays = newCompletedToday 
+          const newCompletedDays = newCompletedToday
             ? Math.min(habit.completedDays + 1, habit.totalDays)
-            : Math.max(habit.completedDays - 1, 0)
+            : Math.max(habit.completedDays - 1, 0);
 
           return {
             ...habit,
             completedToday: newCompletedToday,
             weekData: newWeekData,
-            streak: newCompletedToday ? habit.streak + 1 : Math.max(0, habit.streak - 1),
-            progress: Math.min(100, newCompletedToday ? habit.progress + 10 : habit.progress),
+            streak: newCompletedToday
+              ? habit.streak + 1
+              : Math.max(0, habit.streak - 1),
+            progress: Math.min(
+              100,
+              newCompletedToday ? habit.progress + 10 : habit.progress
+            ),
             completedDays: newCompletedDays,
-            bestStreak: Math.max(habit.bestStreak, newCompletedToday ? habit.streak + 1 : habit.streak),
-          }
+            bestStreak: Math.max(
+              habit.bestStreak,
+              newCompletedToday ? habit.streak + 1 : habit.streak
+            ),
+          };
         }
-        return habit
-      }),
-    )
-  }
+        return habit;
+      })
+    );
+  };
 
-  const handleToggleExpand = (habitId: string) => {
-    setExpandedCardId(currentId => currentId === habitId ? null : habitId)
-  }
+  const handleCardToggle = (habitId: string) => {
+    setExpandedCardId(expandedCardId === habitId ? null : habitId);
+  };
 
   const handleAddHabit = () => {
     // This would open a modal in a real app
-    console.log("Add new habit modal would open here")
-  }
+    console.log("Add new habit modal would open here");
+  };
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     year: "numeric",
     month: "long",
     day: "numeric",
-  })
+  });
 
-  const completedToday = habits.filter((habit) => habit.completedToday).length
-  const totalHabits = habits.length
+  const completedToday = habits.filter((habit) => habit.completedToday).length;
+  const totalHabits = habits.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950">
@@ -165,7 +186,9 @@ export default function Dashboard() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <Calendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                <span className="text-xl font-bold text-slate-900 dark:text-white">TrackMyHabits</span>
+                <span className="text-xl font-bold text-slate-900 dark:text-white">
+                  TrackMyHabits
+                </span>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -198,7 +221,9 @@ export default function Dashboard() {
         <div className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Good morning! 👋</h1>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
+                Good morning! 👋
+              </h1>
               <p className="text-slate-600 dark:text-slate-300">{today}</p>
             </div>
             <div className="mt-4 md:mt-0">
@@ -206,7 +231,9 @@ export default function Dashboard() {
                 <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                   {completedToday}/{totalHabits}
                 </div>
-                <div className="text-sm text-slate-600 dark:text-slate-300">habits completed today</div>
+                <div className="text-sm text-slate-600 dark:text-slate-300">
+                  habits completed today
+                </div>
               </div>
             </div>
           </div>
@@ -218,7 +245,11 @@ export default function Dashboard() {
                 <span className="text-2xl">💡</span>
               </div>
               <div>
-                <p className="text-lg font-medium italic">"{currentQuote || "Building better habits, one day at a time."}"</p>
+                <p className="text-lg font-medium italic">
+                  "
+                  {currentQuote || "Building better habits, one day at a time."}
+                  "
+                </p>
               </div>
             </div>
           </div>
@@ -227,8 +258,8 @@ export default function Dashboard() {
         {/* Habits Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {habits.map((habit) => (
-            <HabitCard 
-              key={habit.id} 
+            <HabitCard
+              key={habit.id}
               id={habit.id}
               name={habit.name}
               icon={habit.icon}
@@ -241,7 +272,7 @@ export default function Dashboard() {
               weeklyGoal={habit.weeklyGoal}
               isExpanded={expandedCardId === habit.id}
               onToggleComplete={handleToggleToday}
-              onToggleExpand={handleToggleExpand}
+              onToggle={handleCardToggle}
             />
           ))}
           <AddHabitButton onClick={handleAddHabit} />
@@ -249,29 +280,44 @@ export default function Dashboard() {
 
         {/* Weekly Summary */}
         <div className="mt-12">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">Weekly Summary</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+            Weekly Summary
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
               <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
-                {habits.reduce((acc, habit) => acc + habit.weekData.filter(Boolean).length, 0)}
+                {habits.reduce(
+                  (acc, habit) => acc + habit.weekData.filter(Boolean).length,
+                  0
+                )}
               </div>
-              <div className="text-slate-600 dark:text-slate-300">Total completions this week</div>
+              <div className="text-slate-600 dark:text-slate-300">
+                Total completions this week
+              </div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
               <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
                 {Math.max(...habits.map((h) => h.streak))}
               </div>
-              <div className="text-slate-600 dark:text-slate-300">Longest current streak</div>
+              <div className="text-slate-600 dark:text-slate-300">
+                Longest current streak
+              </div>
             </div>
             <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
               <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-                {Math.round(habits.reduce((acc, habit) => acc + habit.progress, 0) / habits.length)}%
+                {Math.round(
+                  habits.reduce((acc, habit) => acc + habit.progress, 0) /
+                    habits.length
+                )}
+                %
               </div>
-              <div className="text-slate-600 dark:text-slate-300">Average completion rate</div>
+              <div className="text-slate-600 dark:text-slate-300">
+                Average completion rate
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
