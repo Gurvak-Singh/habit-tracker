@@ -1,11 +1,12 @@
 "use client";
 
-import type React from "react";
+import React, { memo } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { CircularProgressRing } from "./circular-progress-ring";
+import Link from "next/link";
 import {
   Flame,
   Calendar,
@@ -28,10 +29,12 @@ interface HabitCardProps {
   bestStreak?: number;
   weeklyGoal?: number;
   onToggleComplete: (id: string) => void;
+  onEdit?: (habitId: string) => void;
+  color?: string;
   className?: string;
 }
 
-export function HabitCard({
+export const HabitCard = memo(function HabitCard({
   id,
   name,
   icon: Icon,
@@ -43,6 +46,8 @@ export function HabitCard({
   bestStreak = 0,
   weeklyGoal = 7,
   onToggleComplete,
+  onEdit,
+  color = "#3B82F6",
   className = "",
 }: HabitCardProps) {
   const handleCheckboxChange = (checked: boolean) => {
@@ -62,8 +67,14 @@ export function HabitCard({
         <div className="flex items-center space-x-4">
           {/* Icon */}
           <div className="flex-shrink-0">
-            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200">
-              <Icon className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            <div 
+              className="w-12 h-12 rounded-xl flex items-center justify-center group-hover:scale-105 transition-transform duration-200"
+              style={{ 
+                backgroundColor: `${color}20`, // 20% opacity
+                color: color
+              }}
+            >
+              <Icon className="w-6 h-6" style={{ color: color }} />
             </div>
           </div>
 
@@ -103,7 +114,11 @@ export function HabitCard({
             <Checkbox
               checked={isCompleted}
               onCheckedChange={handleCheckboxChange}
-              className="w-5 h-5 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
+              className="w-5 h-5"
+              style={{
+                backgroundColor: isCompleted ? color : 'transparent',
+                borderColor: color
+              }}
             />
           </div>
         </div>
@@ -159,8 +174,11 @@ export function HabitCard({
                 </div>
                 <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
                   <div
-                    className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${(completedDays / totalDays) * 100}%` }}
+                    className="h-2 rounded-full transition-all duration-500"
+                    style={{ 
+                      width: `${(completedDays / totalDays) * 100}%`,
+                      backgroundColor: color
+                    }}
                   />
                 </div>
               </div>
@@ -191,31 +209,34 @@ export function HabitCard({
 
           {/* Action Buttons */}
           <div className="flex space-x-2 mt-4">
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 bg-transparent"
-              onClick={(e) => {
-                e.stopPropagation();
-                // TODO: Add View History functionality
-              }}
-            >
-              View History
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-1 bg-transparent"
-              onClick={(e) => {
-                e.stopPropagation();
-                // TODO: Add Edit Habit functionality
-              }}
-            >
-              Edit Habit
-            </Button>
+            <Link href="/history" className="flex-1">
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full bg-transparent"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                View History
+              </Button>
+            </Link>
+            {onEdit && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1 bg-transparent"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(id);
+                }}
+              >
+                Edit Habit
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>
     </Card>
   );
-}
+});

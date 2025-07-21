@@ -1,105 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense, lazy } from "react";
 import { Button } from "@/components/ui/button";
 import { HabitCard } from "@/components/habit-card";
 import { AddHabitButton } from "@/components/add-habit-button";
 import {
-  BookOpen,
-  Dumbbell,
-  Droplets,
-  Moon,
-  Apple,
-  Coffee,
   Calendar,
   Settings,
   BarChart3,
   CreditCard,
+  History,
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useHabits } from "@/hooks/use-habits";
+import { useMilestoneCelebrations } from "@/hooks/use-milestone-celebrations";
+import { getIconComponent } from "@/components/icon-picker";
+import { Habit } from "@/lib/storage";
+import { Goal } from "@/lib/goals";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useCelebration } from "@/components/progress-celebration";
+import { DashboardSkeleton } from "@/components/ui/skeleton";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-// Sample habit data
-const initialHabits = [
-  {
-    id: "1",
-    name: "Read 30 minutes",
-    icon: BookOpen,
-    streak: 12,
-    progress: 85,
-    completedToday: true,
-    weekData: [true, true, false, true, true, true, true],
-    completedDays: 25,
-    totalDays: 30,
-    bestStreak: 18,
-    weeklyGoal: 7,
-  },
-  {
-    id: "2",
-    name: "Exercise",
-    icon: Dumbbell,
-    streak: 7,
-    progress: 60,
-    completedToday: false,
-    weekData: [true, false, true, true, false, true, true],
-    completedDays: 18,
-    totalDays: 30,
-    bestStreak: 14,
-    weeklyGoal: 5,
-  },
-  {
-    id: "3",
-    name: "Drink 8 glasses of water",
-    icon: Droplets,
-    streak: 5,
-    progress: 75,
-    completedToday: true,
-    weekData: [true, true, true, false, true, true, false],
-    completedDays: 22,
-    totalDays: 30,
-    bestStreak: 12,
-    weeklyGoal: 7,
-  },
-  {
-    id: "4",
-    name: "Sleep 8 hours",
-    icon: Moon,
-    streak: 3,
-    progress: 40,
-    completedToday: false,
-    weekData: [false, true, false, true, false, true, false],
-    completedDays: 12,
-    totalDays: 30,
-    bestStreak: 8,
-    weeklyGoal: 7,
-  },
-  {
-    id: "5",
-    name: "Eat healthy",
-    icon: Apple,
-    streak: 15,
-    progress: 90,
-    completedToday: true,
-    weekData: [true, true, true, true, true, false, true],
-    completedDays: 27,
-    totalDays: 30,
-    bestStreak: 20,
-    weeklyGoal: 6,
-  },
-  {
-    id: "6",
-    name: "Morning coffee ritual",
-    icon: Coffee,
-    streak: 21,
-    progress: 95,
-    completedToday: true,
-    weekData: [true, true, true, true, true, true, true],
-    completedDays: 29,
-    totalDays: 30,
-    bestStreak: 25,
-    weeklyGoal: 7,
-  },
-];
+// Lazy load heavy components
+const HabitModal = lazy(() => import("@/components/habit-modal").then(mod => ({ default: mod.HabitModal })));
+const ProgressCelebration = lazy(() => import("@/components/progress-celebration").then(mod => ({ default: mod.ProgressCelebration })));
 
 const motivationalQuotes = [
   "Success is the sum of small efforts repeated day in and day out.",
@@ -111,9 +37,23 @@ const motivationalQuotes = [
 ];
 
 export default function Dashboard() {
-  const [habits, setHabits] = useState(initialHabits);
+  const { 
+    habits, 
+    isLoading, 
+    error, 
+    addHabit, 
+    updateHabit, 
+    deleteHabit, 
+    toggleHabitCompletion 
+  } = useHabits();
+  
   const [currentQuote, setCurrentQuote] = useState("");
-  // Removed: const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
+  const [editingHabit, setEditingHabit] = useState<Habit | null>(null);
+  const [modalMode, setModalMode] = useState<"create" | "edit">("create");
+  
+  const { celebration, hideCelebration } = useCelebration();
+  const { celebrateStreak } = useMilestoneCelebrations();
 
   useEffect(() => {
     // Set quote on client side to avoid hydration mismatch
@@ -122,47 +62,49 @@ export default function Dashboard() {
     );
   }, []);
 
-  const handleToggleToday = (habitId: string) => {
-    setHabits(
-      habits.map((habit) => {
-        if (habit.id === habitId) {
-          const newCompletedToday = !habit.completedToday;
-          const newWeekData = [...habit.weekData];
-          newWeekData[6] = newCompletedToday; // Update today (last day in week view)
-
-          // Update completedDays based on the toggle
-          const newCompletedDays = newCompletedToday
-            ? Math.min(habit.completedDays + 1, habit.totalDays)
-            : Math.max(habit.completedDays - 1, 0);
-
-          return {
-            ...habit,
-            completedToday: newCompletedToday,
-            weekData: newWeekData,
-            streak: newCompletedToday
-              ? habit.streak + 1
-              : Math.max(0, habit.streak - 1),
-            progress: Math.min(
-              100,
-              newCompletedToday ? habit.progress + 10 : habit.progress
-            ),
-            completedDays: newCompletedDays,
-            bestStreak: Math.max(
-              habit.bestStreak,
-              newCompletedToday ? habit.streak + 1 : habit.streak
-            ),
-          };
-        }
-        return habit;
-      })
-    );
+  const handleToggleToday = async (habitId: string) => {
+    const habit = habits.find(h => h.id === habitId);
+    const oldStreak = habit?.streak || 0;
+    
+    await toggleHabitCompletion(habitId);
+    
+    // Check for streak celebrations after toggle
+    if (habit) {
+      const updatedHabit = habits.find(h => h.id === habitId);
+      const newStreak = updatedHabit?.streak || 0;
+      
+      // If streak increased, potentially celebrate
+      if (newStreak > oldStreak) {
+        celebrateStreak(newStreak, habit);
+      }
+    }
   };
 
-  // Removed: const handleCardToggle = (habitId: string) => { ... }
-
   const handleAddHabit = () => {
-    // This would open a modal in a real app
-    console.log("Add new habit modal would open here");
+    setModalMode("create");
+    setEditingHabit(null);
+    setIsHabitModalOpen(true);
+  };
+
+  const handleEditHabit = (habit: Habit) => {
+    setModalMode("edit");
+    setEditingHabit(habit);
+    setIsHabitModalOpen(true);
+  };
+
+  const handleSaveHabit = async (habitData: Omit<Habit, 'id' | 'createdAt' | 'updatedAt' | 'completions'>, goals?: Goal[]) => {
+    if (modalMode === "create") {
+      return await addHabit(habitData, goals);
+    } else if (editingHabit) {
+      return await updateHabit(editingHabit.id, habitData);
+    }
+    return false;
+  };
+
+  const handleDeleteHabit = async (habitId: string) => {
+    if (confirm("Are you sure you want to delete this habit? This action cannot be undone.")) {
+      await deleteHabit(habitId);
+    }
   };
 
   const today = new Date().toLocaleDateString("en-US", {
@@ -172,8 +114,12 @@ export default function Dashboard() {
     day: "numeric",
   });
 
-  const completedToday = habits.filter((habit) => habit.completedToday).length;
+  const completedToday = habits.filter((habit) => habit.isCompletedToday).length;
   const totalHabits = habits.length;
+
+  if (isLoading) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-slate-950 dark:to-blue-950">
@@ -191,6 +137,12 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center space-x-2">
               <ThemeToggle />
+              <Link href="/history">
+                <Button variant="outline" size="sm">
+                  <History className="w-4 h-4 mr-2" />
+                  History
+                </Button>
+              </Link>
               <Link href="/analytics">
                 <Button variant="outline" size="sm">
                   <BarChart3 className="w-4 h-4 mr-2" />
@@ -253,67 +205,125 @@ export default function Dashboard() {
           </div>
         </div>
 
+        {/* Error Alert */}
+        {error && (
+          <Alert className="mb-6 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">
+            <AlertDescription className="text-red-800 dark:text-red-200">
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Habits Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {habits.map((habit) => (
-            <HabitCard
-              key={habit.id}
-              id={habit.id}
-              name={habit.name}
-              icon={habit.icon}
-              streak={habit.streak}
-              completionPercentage={habit.progress}
-              isCompleted={habit.completedToday}
-              completedDays={habit.completedDays}
-              totalDays={habit.totalDays}
-              bestStreak={habit.bestStreak}
-              weeklyGoal={habit.weeklyGoal}
-              onToggleComplete={handleToggleToday}
-            />
-          ))}
+          {habits.map((habit) => {
+            const IconComponent = getIconComponent(habit.icon);
+            return (
+              <HabitCard
+                key={habit.id}
+                id={habit.id}
+                name={habit.name}
+                icon={IconComponent}
+                streak={habit.streak}
+                completionPercentage={habit.completionPercentage}
+                isCompleted={habit.isCompletedToday}
+                completedDays={habit.completedDaysThisMonth}
+                totalDays={30}
+                bestStreak={habit.bestStreak}
+                weeklyGoal={habit.weeklyGoal}
+                onToggleComplete={handleToggleToday}
+                onEdit={() => handleEditHabit(habit)}
+                color={habit.color}
+              />
+            );
+          })}
           <AddHabitButton onClick={handleAddHabit} />
         </div>
 
         {/* Weekly Summary */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
-            Weekly Summary
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
-                {habits.reduce(
-                  (acc, habit) => acc + habit.weekData.filter(Boolean).length,
-                  0
-                )}
+        {habits.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-6">
+              Weekly Summary
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                <div className="text-3xl font-bold text-green-600 dark:text-green-400 mb-2">
+                  {habits.reduce((acc, habit) => acc + (habit.isCompletedToday ? 1 : 0), 0)}
+                </div>
+                <div className="text-slate-600 dark:text-slate-300">
+                  Completed today
+                </div>
               </div>
-              <div className="text-slate-600 dark:text-slate-300">
-                Total completions this week
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                  {habits.length > 0 ? Math.max(...habits.map((h) => h.streak)) : 0}
+                </div>
+                <div className="text-slate-600 dark:text-slate-300">
+                  Longest current streak
+                </div>
               </div>
-            </div>
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">
-                {Math.max(...habits.map((h) => h.streak))}
-              </div>
-              <div className="text-slate-600 dark:text-slate-300">
-                Longest current streak
-              </div>
-            </div>
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
-                {Math.round(
-                  habits.reduce((acc, habit) => acc + habit.progress, 0) /
-                    habits.length
-                )}
-                %
-              </div>
-              <div className="text-slate-600 dark:text-slate-300">
-                Average completion rate
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                <div className="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">
+                  {habits.length > 0 
+                    ? Math.round(
+                        habits.reduce((acc, habit) => acc + habit.completionPercentage, 0) /
+                          habits.length
+                      )
+                    : 0
+                  }%
+                </div>
+                <div className="text-slate-600 dark:text-slate-300">
+                  Average completion rate
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Empty State */}
+        {habits.length === 0 && (
+          <div className="text-center py-12">
+            <div className="w-24 h-24 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Calendar className="w-12 h-12 text-slate-400 dark:text-slate-500" />
+            </div>
+            <h3 className="text-xl font-semibold text-slate-900 dark:text-white mb-2">
+              No habits yet
+            </h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-6">
+              Create your first habit to start tracking your progress
+            </p>
+            <Button onClick={handleAddHabit} size="lg">
+              Create Your First Habit
+            </Button>
+          </div>
+        )}
       </div>
+
+      {/* Habit Modal */}
+      <Suspense fallback={
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <LoadingSpinner size="lg" />
+        </div>
+      }>
+        <HabitModal
+          isOpen={isHabitModalOpen}
+          onClose={() => setIsHabitModalOpen(false)}
+          onSave={handleSaveHabit}
+          habit={editingHabit}
+          mode={modalMode}
+        />
+      </Suspense>
+
+      {/* Progress Celebrations */}
+      <Suspense fallback={null}>
+        <ProgressCelebration
+          isVisible={celebration.isVisible}
+          onClose={hideCelebration}
+          type={celebration.type}
+          data={celebration.data}
+        />
+      </Suspense>
     </div>
   );
 }

@@ -5,6 +5,42 @@
 /* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind utilities;
 
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  overscroll-behavior: none;
+}
+
+/* Hardware acceleration for animations */
+.animate-spin,
+.animate-pulse,
+.animate-bounce {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Optimize repaints */
+img, video {
+  will-change: auto;
+}
+
+/* Reduce layout thrashing */
+.transition-all,
+.transition-colors,
+.transition-opacity,
+.transition-transform {
+  will-change: auto;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -291,34 +327,40 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar - Completely hidden */
-::-webkit-scrollbar {
+/* Custom scrollbar - Only hide for body and html, not all elements */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
   width: 0px;
   display: none;
 }
 
-::-webkit-scrollbar-track {
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
   background: transparent;
   display: none;
 }
 
-::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
   background: transparent;
   display: none;
 }
 
-::-webkit-scrollbar-thumb:hover {
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
   background: transparent;
   display: none;
 }
 
-/* Hide scrollbar for Firefox */
-* {
+/* Hide scrollbar for Firefox - only for body */
+html,
+body {
   scrollbar-width: none;
 }
 
-/* Hide scrollbar for IE and Edge */
-* {
+/* Hide scrollbar for IE and Edge - only for body */
+html,
+body {
   -ms-overflow-style: none;
 }
 
@@ -375,4 +417,51 @@ html {
   100% {
     content: "...";
   }
+}
+
+/* Scrollbar hide utility class - ensures mouse wheel scrolling still works */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  width: 0px; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
+}
+
+/* Custom styled scrollbar for better UX */
+.styled-scrollbar {
+  scrollbar-width: thin; /* Firefox - thin scrollbar */
+  scrollbar-color: rgb(203 213 225) transparent; /* Firefox - light gray thumb, transparent track */
+}
+
+.styled-scrollbar::-webkit-scrollbar {
+  width: 6px; /* Chrome, Safari - thin width */
+}
+
+.styled-scrollbar::-webkit-scrollbar-track {
+  background: transparent; /* No track background */
+}
+
+.styled-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(203 213 225); /* Light gray thumb */
+  border-radius: 3px; /* Rounded corners */
+}
+
+.styled-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(156 163 175); /* Darker on hover */
+}
+
+/* Dark mode scrollbar */
+.dark .styled-scrollbar {
+  scrollbar-color: rgb(71 85 105) transparent;
+}
+
+.dark .styled-scrollbar::-webkit-scrollbar-thumb {
+  background: rgb(71 85 105);
+}
+
+.dark .styled-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgb(100 116 139);
 }

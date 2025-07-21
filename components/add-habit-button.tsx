@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react";
 import { Card, CardContent } from "@/components/ui/card"
 import { Plus } from "lucide-react"
 
@@ -7,7 +8,7 @@ interface AddHabitButtonProps {
   onClick: () => void
 }
 
-export function AddHabitButton({ onClick }: AddHabitButtonProps) {
+export const AddHabitButton = memo(function AddHabitButton({ onClick }: AddHabitButtonProps) {
   return (
     <Card
       className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 border-2 border-dashed border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50 cursor-pointer"
@@ -24,4 +25,4 @@ export function AddHabitButton({ onClick }: AddHabitButtonProps) {
       </CardContent>
     </Card>
   )
-}
+});
