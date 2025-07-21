@@ -28,8 +28,6 @@ interface HabitCardProps {
   bestStreak?: number;
   weeklyGoal?: number;
   onToggleComplete: (id: string) => void;
-  isExpanded: boolean;
-  onToggle: (id: string) => void;
   className?: string;
 }
 
@@ -45,35 +43,8 @@ export function HabitCard({
   bestStreak = 0,
   weeklyGoal = 7,
   onToggleComplete,
-  isExpanded,
-  onToggle,
   className = "",
 }: HabitCardProps) {
-  // Ensure onToggle has a default value
-  const safeOnToggle =
-    onToggle || (() => console.warn("onToggle not provided"));
-  const handleCardClick = (e: React.MouseEvent) => {
-    // Prevent expansion if clicking on interactive elements
-    const target = e.target as HTMLElement;
-    const isInteractiveElement =
-      target.closest('[role="checkbox"]') ||
-      target.closest("button") ||
-      target.closest("input") ||
-      target.hasAttribute("data-prevent-expand") ||
-      target.closest("[data-prevent-expand]");
-
-    if (isInteractiveElement) {
-      return;
-    }
-
-    // Prevent event bubbling to avoid double-triggering
-    e.preventDefault();
-    e.stopPropagation();
-
-    // Toggle expansion state
-    safeOnToggle(id);
-  };
-
   const handleCheckboxChange = (checked: boolean) => {
     onToggleComplete(id);
   };
@@ -82,18 +53,9 @@ export function HabitCard({
     e.stopPropagation();
   };
 
-  const handleExpandButtonClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation(); // Prevent double-triggering
-    safeOnToggle(id);
-  };
-
   return (
     <Card
-      className={`habit-card group cursor-pointer transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 ${
-        isExpanded ? "expanded" : "collapsed"
-      } ${className}`}
-      onClick={handleCardClick}
+      className={`habit-card group transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 ${className}`}
     >
       <CardContent className="p-4">
         {/* Main Card Content */}
@@ -128,13 +90,7 @@ export function HabitCard({
           </div>
 
           {/* Progress Ring */}
-          <div
-            className="flex-shrink-0"
-            data-prevent-expand
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
+          <div className="flex-shrink-0">
             <CircularProgressRing
               percentage={completionPercentage}
               size={48}
@@ -143,147 +99,122 @@ export function HabitCard({
           </div>
 
           {/* Checkbox */}
-          <div
-            className="flex-shrink-0"
-            data-prevent-expand
-            onClick={handleCheckboxClick}
-          >
+          <div className="flex-shrink-0" onClick={handleCheckboxClick}>
             <Checkbox
               checked={isCompleted}
               onCheckedChange={handleCheckboxChange}
               className="w-5 h-5 data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
             />
           </div>
+        </div>
 
-          {/* Expand Icon */}
-          <div className="flex-shrink-0" data-prevent-expand>
+        {/* Always show expanded details */}
+        <div className="expanded-content mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+          <div className="grid grid-cols-2 gap-4">
+            {/* Stats */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Calendar className="w-4 h-4 text-slate-500" />
+                  <span className="text-sm text-slate-600 dark:text-slate-300">
+                    This Month
+                  </span>
+                </div>
+                <span className="text-sm font-medium text-slate-900 dark:text-white">
+                  {completedDays}/{totalDays}
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-4 h-4 text-slate-500" />
+                  <span className="text-sm text-slate-600 dark:text-slate-300">
+                    Best Streak
+                  </span>
+                </div>
+                <span className="text-sm font-medium text-slate-900 dark:text-white">
+                  {bestStreak} days
+                </span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Target className="w-4 h-4 text-slate-500" />
+                  <span className="text-sm text-slate-600 dark:text-slate-300">
+                    Weekly Goal
+                  </span>
+                </div>
+                <span className="text-sm font-medium text-slate-900 dark:text-white">
+                  {Math.min(completedDays, weeklyGoal)}/{weeklyGoal}
+                </span>
+              </div>
+            </div>
+
+            {/* Progress Bars */}
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
+                  <span>Monthly Progress</span>
+                  <span>{Math.round((completedDays / totalDays) * 100)}%</span>
+                </div>
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                  <div
+                    className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-500"
+                    style={{ width: `${(completedDays / totalDays) * 100}%` }}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
+                  <span>Weekly Goal</span>
+                  <span>
+                    {Math.round(
+                      (Math.min(completedDays, weeklyGoal) / weeklyGoal) * 100
+                    )}
+                    %
+                  </span>
+                </div>
+                <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                  <div
+                    className="bg-green-600 dark:bg-green-400 h-2 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${
+                        (Math.min(completedDays, weeklyGoal) / weeklyGoal) * 100
+                      }%`,
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex space-x-2 mt-4">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="w-8 h-8 p-0"
-              onClick={handleExpandButtonClick}
+              className="flex-1 bg-transparent"
+              onClick={(e) => {
+                e.stopPropagation();
+                // TODO: Add View History functionality
+              }}
             >
-              {isExpanded ? (
-                <ChevronUp className="w-4 h-4 text-slate-400" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-slate-400" />
-              )}
+              View History
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="flex-1 bg-transparent"
+              onClick={(e) => {
+                e.stopPropagation();
+                // TODO: Add Edit Habit functionality
+              }}
+            >
+              Edit Habit
             </Button>
           </div>
         </div>
-
-        {/* Expanded Details */}
-        {isExpanded && (
-          <div className="expanded-content mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-            <div className="grid grid-cols-2 gap-4">
-              {/* Stats */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Calendar className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-300">
-                      This Month
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">
-                    {completedDays}/{totalDays}
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <TrendingUp className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-300">
-                      Best Streak
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">
-                    {bestStreak} days
-                  </span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-2">
-                    <Target className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm text-slate-600 dark:text-slate-300">
-                      Weekly Goal
-                    </span>
-                  </div>
-                  <span className="text-sm font-medium text-slate-900 dark:text-white">
-                    {Math.min(completedDays, weeklyGoal)}/{weeklyGoal}
-                  </span>
-                </div>
-              </div>
-
-              {/* Progress Bars */}
-              <div className="space-y-3">
-                <div>
-                  <div className="flex justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
-                    <span>Monthly Progress</span>
-                    <span>
-                      {Math.round((completedDays / totalDays) * 100)}%
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 dark:bg-blue-400 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(completedDays / totalDays) * 100}%` }}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
-                    <span>Weekly Goal</span>
-                    <span>
-                      {Math.round(
-                        (Math.min(completedDays, weeklyGoal) / weeklyGoal) * 100
-                      )}
-                      %
-                    </span>
-                  </div>
-                  <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-                    <div
-                      className="bg-green-600 dark:bg-green-400 h-2 rounded-full transition-all duration-500"
-                      style={{
-                        width: `${
-                          (Math.min(completedDays, weeklyGoal) / weeklyGoal) *
-                          100
-                        }%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex space-x-2 mt-4" data-prevent-expand>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1 bg-transparent"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // TODO: Add View History functionality
-                }}
-              >
-                View History
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex-1 bg-transparent"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // TODO: Add Edit Habit functionality
-                }}
-              >
-                Edit Habit
-              </Button>
-            </div>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

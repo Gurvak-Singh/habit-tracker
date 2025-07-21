@@ -113,7 +113,7 @@ const motivationalQuotes = [
 export default function Dashboard() {
   const [habits, setHabits] = useState(initialHabits);
   const [currentQuote, setCurrentQuote] = useState("");
-  const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
+  // Removed: const [expandedCardId, setExpandedCardId] = useState<string | null>(null);
 
   useEffect(() => {
     // Set quote on client side to avoid hydration mismatch
@@ -158,9 +158,7 @@ export default function Dashboard() {
     );
   };
 
-  const handleCardToggle = (habitId: string) => {
-    setExpandedCardId((prevId) => (prevId === habitId ? null : habitId));
-  };
+  // Removed: const handleCardToggle = (habitId: string) => { ... }
 
   const handleAddHabit = () => {
     // This would open a modal in a real app
@@ -270,9 +268,7 @@ export default function Dashboard() {
               totalDays={habit.totalDays}
               bestStreak={habit.bestStreak}
               weeklyGoal={habit.weeklyGoal}
-              isExpanded={expandedCardId === habit.id}
               onToggleComplete={handleToggleToday}
-              onToggle={handleCardToggle}
             />
           ))}
           <AddHabitButton onClick={handleAddHabit} />
