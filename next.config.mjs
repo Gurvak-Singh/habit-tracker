@@ -21,6 +21,7 @@ const nextConfig = {
   swcMinify: true,
   // Optimize bundling
   transpilePackages: [],
+  output: 'export', // Ensures static export to 'out' directory
 }
 
 export default nextConfig;
