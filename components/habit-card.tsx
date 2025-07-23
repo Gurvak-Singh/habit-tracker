@@ -16,6 +16,7 @@ import {
   ChevronUp,
   type LucideIcon,
 } from "lucide-react";
+import { AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
 
 interface HabitCardProps {
   id: string;
@@ -30,6 +31,7 @@ interface HabitCardProps {
   weeklyGoal?: number;
   onToggleComplete: (id: string) => void;
   onEdit?: (habitId: string) => void;
+  onDelete?: (habitId: string) => void;
   color?: string;
   className?: string;
 }
@@ -47,6 +49,7 @@ export const HabitCard = memo(function HabitCard({
   weeklyGoal = 7,
   onToggleComplete,
   onEdit,
+  onDelete,
   color = "#3B82F6",
   className = "",
 }: HabitCardProps) {
@@ -233,6 +236,36 @@ export const HabitCard = memo(function HabitCard({
               >
                 Edit Habit
               </Button>
+            )}
+            {onDelete && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="flex-1"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Habit?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete this habit? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => onDelete(id)}
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             )}
           </div>
         </div>

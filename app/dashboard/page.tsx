@@ -102,10 +102,8 @@ export default function Dashboard() {
   };
 
   const handleDeleteHabit = async (habitId: string) => {
-    if (confirm("Are you sure you want to delete this habit? This action cannot be undone.")) {
-      await deleteHabit(habitId);
-    }
-  };
+  await deleteHabit(habitId);
+};
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -234,6 +232,7 @@ export default function Dashboard() {
                 onToggleComplete={handleToggleToday}
                 onEdit={() => handleEditHabit(habit)}
                 color={habit.color}
+                onDelete={handleDeleteHabit}
               />
             );
           })}
