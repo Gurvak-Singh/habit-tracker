@@ -102,8 +102,9 @@ export default function Dashboard() {
   };
 
   const handleDeleteHabit = async (habitId: string) => {
-  await deleteHabit(habitId);
-};
+    console.log('Delete requested for habit:', habitId);
+    await deleteHabit(habitId);
+  };
 
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",

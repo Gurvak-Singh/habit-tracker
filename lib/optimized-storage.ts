@@ -145,6 +145,24 @@ export class OptimizedHabitStorage {
     }
   }
 
+  deleteHabit(id: string): boolean {
+    try {
+      const habits = this.getAllHabits();
+      const filteredHabits = habits.filter(h => h.id !== id);
+      
+      if (filteredHabits.length === habits.length) {
+        return false; // Habit not found
+      }
+
+      this.cache.set(this.KEYS.HABITS, filteredHabits);
+      this.batchStorage.immediateWrite(this.KEYS.HABITS, filteredHabits);
+      return true;
+    } catch (error) {
+      console.error('Failed to delete habit:', error);
+      return false;
+    }
+  }
+
   // Bulk operations for better performance
   saveMultipleHabits(habitsToSave: Habit[]): boolean {
     try {

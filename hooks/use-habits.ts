@@ -191,7 +191,7 @@ export function useHabits(): UseHabitsReturn {
 
   const deleteHabit = useCallback(async (id: string): Promise<boolean> => {
     try {
-      const success = habitStorage.deleteHabit(id);
+      const success = optimizedHabitStorage.deleteHabit(id);
       
       if (success) {
         await loadHabits();
