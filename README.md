@@ -89,7 +89,6 @@ Project Link: [https://github.com/Gurvak-Singh/habit-tracker](https://github.com
 ## 🙏 Acknowledgments
 
 - Thanks to all the open-source habit tracking projects that provided inspiration
-- [Any other acknowledgments you'd like to add]
 
 ---
 
